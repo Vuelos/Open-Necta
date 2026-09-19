@@ -195,6 +195,39 @@ using ::sinf;
 using ::sqrtf;
 using ::tanf;
 } // namespace std
+
+#ifndef APIENTRY
+#define APIENTRY __stdcall
+#endif
+#ifndef WINGDIAPI
+#define WINGDIAPI __declspec(dllimport)
+#endif
+#ifndef CALLBACK
+#define CALLBACK __stdcall
+#endif
+
+#if defined(__cplusplus) && defined(_WIN32)
+typedef unsigned int GLenum;
+typedef unsigned char GLboolean;
+typedef unsigned int GLbitfield;
+typedef signed char GLbyte;
+typedef short GLshort;
+typedef int GLint;
+typedef int GLsizei;
+typedef unsigned char GLubyte;
+typedef unsigned short GLushort;
+typedef unsigned int GLuint;
+typedef float GLfloat;
+typedef float GLclampf;
+typedef double GLdouble;
+typedef double GLclampd;
+typedef void GLvoid;
+
+struct HWND__;
+struct HINSTANCE__;
+typedef struct HWND__ *HWND;
+typedef struct HINSTANCE__ *HINSTANCE;
+#endif
 #endif
 
 #endif /* _PC_TYPES_H */

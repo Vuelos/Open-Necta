@@ -409,4 +409,6 @@ inline void padStack(void)
 #pragma warning(disable : 4716) // Allow non-void functions to return nothing.
 #endif
 
+
+
 #endif // _TYPES_H

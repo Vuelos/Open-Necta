@@ -548,10 +548,27 @@ set_target_properties(${NECTAR_GAME} PROPERTIES
     OUTPUT_NAME "${NECTAR_OUTPUT_NAME}"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
-if (NOT ANDROID)
+if (NOT ANDROID AND NOT WIN32)
     add_custom_command(TARGET ${NECTAR_GAME} POST_BUILD
         COMMAND /bin/chmod 775 "$<TARGET_FILE:${NECTAR_GAME}>"
         COMMENT "Ensuring the native Pikmin executable is runnable")
+endif()
+
+if (WIN32)
+    set(RUNTIME_DLLS
+        "${CMAKE_CURRENT_SOURCE_DIR}/third_party/SDL2-mingw64/bin/SDL2.dll"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tools/mingw64/bin/libgcc_s_seh-1.dll"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tools/mingw64/bin/libstdc++-6.dll"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tools/mingw64/bin/libwinpthread-1.dll"
+    )
+    foreach(dll ${RUNTIME_DLLS})
+        if(EXISTS "${dll}")
+            add_custom_command(TARGET ${NECTAR_GAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dll}" "$<TARGET_FILE_DIR:${NECTAR_GAME}>"
+                COMMENT "Copying runtime DLL to output directory"
+            )
+        endif()
+    endforeach()
 endif()
 
 # Standalone first-run launcher. It accepts an original, uncompressed

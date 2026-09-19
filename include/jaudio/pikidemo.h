@@ -30,8 +30,11 @@ void Jac_FinishTextDemo(void);                              // args
 void Jac_SetDemoPartsID(int);                               // args
 void Jac_SetDemoOnyons(int);                                // args
 void Jac_SetDemoPartsCount(int);                            // args
+#ifdef PIKI_PC_PORT
+void Jac_NoteDemoSkipped(void);
+#endif
 
-/////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 END_SCOPE_EXTERN_C
 

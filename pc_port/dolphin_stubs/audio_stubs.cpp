@@ -840,6 +840,8 @@ void Jac_FinishTextDemo() {
     sEventResumeFrames = 3;
     apply_gameplay_audio_pause();
 }
+void Jac_NoteDemoSkipped() {
+}
 void Jac_Freeze_Precall() {
     // Mirrors AllStop_1Shot + FlushRelease_1Shot without destroying the
     // persistent BGM/stream state before the reset path has committed.

@@ -3621,3 +3621,8 @@ CollTriInfo* BaseShape::findCollTri(Vector3f& vtx1, Vector3f& vtx2, Vector3f& vt
 //}
 
 #endif
+
+DlobjInfo::DlobjInfo()
+{
+	mDispList = nullptr;
+}

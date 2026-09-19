@@ -5,7 +5,6 @@
 #include "types.h"
 
 // TODO: We shouldn't be defining this.  It comes from <WinDef.h> of the Win32 API.
-typedef u32 HWND;
 
 // Misc. definitions
 #define ATX_SERVICE_NAME_SIZE (4)     // 3 chars + null terminator

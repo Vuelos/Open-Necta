@@ -182,3 +182,8 @@ void LightGroup::refresh(Graphics& gfx, immut Matrix4f* lightMtx)
 		}
 	}
 }
+#ifdef WIN32
+void LightGroup::genAge(AgeServer&)
+{
+}
+#endif

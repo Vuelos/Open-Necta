@@ -14,8 +14,38 @@
 #include <vector>
 #include <string>
 
+#ifdef _WIN32
+#include <windows.h>
+#undef ERROR
+#include <fcntl.h>
+#include <io.h>
+#endif
+
 static std::unordered_map<DVDFileInfo*, FILE*> sOpenFiles;
 static std::vector<std::string> sFastOpenPaths;
+
+static std::string getExecutableDir()
+{
+    char path[1024];
+#ifdef _WIN32
+    DWORD len = GetModuleFileNameA(NULL, path, sizeof(path));
+    if (len == 0 || len == sizeof(path)) {
+        return ".";
+    }
+#else
+    ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
+    if (len == -1) {
+        return ".";
+    }
+    path[len] = '\0';
+#endif
+    std::string fullPath(path);
+    size_t pos = fullPath.find_last_of("\\/");
+    if (pos != std::string::npos) {
+        return fullPath.substr(0, pos);
+    }
+    return ".";
+}
 
 extern "C" {
 
@@ -28,11 +58,30 @@ BOOL DVDOpen(const char* filename, DVDFileInfo* fileInfo) {
     if (path.length() > 0 && (path[0] == '/' || path[0] == '\\')) {
         path = path.substr(1);
     }
-    path = "assets/" + path;
 
-    FILE* f = fopen(path.c_str(), "rb");
+    std::string exeDir = getExecutableDir();
+    std::string assetPath = exeDir + "/assets/" + path;
+
+    FILE* f = fopen(assetPath.c_str(), "rb");
     if (!f) {
-        printf("[PC Port] DVDOpen(\"%s\") -> FAILED to open %s\n", filename, path.c_str());
+        std::string assetPath2 = exeDir + "\\assets\\" + path;
+        f = fopen(assetPath2.c_str(), "rb");
+    }
+    if (!f) {
+        std::string assetPath3 = "assets/" + path;
+        f = fopen(assetPath3.c_str(), "rb");
+    }
+    if (!f) {
+        HANDLE hFile = CreateFileA(assetPath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (hFile != INVALID_HANDLE_VALUE) {
+            int fd = _open_osfhandle((intptr_t)hFile, _O_RDONLY);
+            if (fd != -1) {
+                f = _fdopen(fd, "rb");
+            }
+        }
+    }
+    if (!f) {
+        printf("[PC Port] DVDOpen(\"%s\") -> FAILED to open %s\n", filename, assetPath.c_str());
         return FALSE;
     }
 

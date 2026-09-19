@@ -36,6 +36,8 @@
 
 #if defined(WIN32)
 #include <windows.h>
+#undef ERROR
+#define ERROR _Error
 #endif
 
 /**
@@ -1664,7 +1666,7 @@ void System::startDvdThread()
 #ifdef WIN32
 
 // TODO, this function is pulled from MSVCRTD.dll
-FILE* fopen(char*, char*)
+FILE* fopen(const char*, const char*)
 {
 	return nullptr;
 }

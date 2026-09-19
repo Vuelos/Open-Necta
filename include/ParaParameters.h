@@ -5,6 +5,8 @@
 #include "sysNew.h"
 #include "types.h"
 
+class AgeServer;
+
 /**
  * @brief TODO
  */
